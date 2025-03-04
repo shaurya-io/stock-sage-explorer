@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Check, ChevronDown, Search } from 'lucide-react';
@@ -14,7 +14,6 @@ const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
-  const commandRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (stock: Stock) => {
     setSelectedStock(stock);
@@ -47,10 +46,10 @@ const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
           </button>
         </PopoverTrigger>
         <PopoverContent 
-          className="p-0 w-[var(--radix-popover-trigger-width)] max-h-[300px]"
+          className="p-0 w-[var(--radix-popover-trigger-width)] max-h-[300px] bg-white"
           align="start"
         >
-          <Command ref={commandRef} className="rounded-lg border-none">
+          <Command className="rounded-lg border-none">
             <CommandInput 
               placeholder="Search stocks..." 
               value={searchValue}
