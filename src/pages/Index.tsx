@@ -32,6 +32,12 @@ const Index = () => {
       return;
     }
 
+    if (!apiKey || apiKey.trim() === '') {
+      toast.error('API key is empty or invalid');
+      setKeySubmitted(false);
+      return;
+    }
+
     setSelectedStock(stock);
     setIsLoading(true);
     setError(null);
@@ -39,9 +45,11 @@ const Index = () => {
     setReferences(null);
 
     try {
+      toast.info(`Analyzing ${stock.symbol}...`);
       const result: StockAnalysisResult = await getStockAnalysis(stock.symbol, apiKey);
       setAnalysis(result.content);
       setReferences(result.references);
+      toast.success(`Analysis for ${stock.symbol} complete`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
       setError(errorMessage);
@@ -58,8 +66,16 @@ const Index = () => {
       return;
     }
     
+    const trimmedKey = apiKey.trim();
+    
+    // Validate the API key format (basic check - Perplexity keys start with "pplx-")
+    if (!trimmedKey.startsWith('pplx-')) {
+      toast.warning('API key should start with "pplx-". Please check your key.');
+    }
+    
     // Store API key in localStorage
-    localStorage.setItem(API_KEY_STORAGE_KEY, apiKey.trim());
+    localStorage.setItem(API_KEY_STORAGE_KEY, trimmedKey);
+    setApiKey(trimmedKey);
     setKeySubmitted(true);
     toast.success('API key saved');
   };

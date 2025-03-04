@@ -41,12 +41,14 @@ export async function getStockAnalysis(
     
     console.log("Making request to Perplexity API with key length:", trimmedApiKey.length);
     
+    // Add credentials and mode to fetch options to handle CORS issues
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${trimmedApiKey}`,
         'Content-Type': 'application/json',
       },
+      mode: 'cors', // Add explicit CORS mode
       body: JSON.stringify({
         model: 'sonar-pro',
         messages: [
@@ -65,8 +67,9 @@ export async function getStockAnalysis(
     });
 
     if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(`API Error: ${response.status} - ${errorData}`);
+      const errorText = await response.text();
+      console.error('Perplexity API error response:', response.status, errorText);
+      throw new Error(`API Error: ${response.status} - ${errorText || response.statusText}`);
     }
 
     const data: PerplexityResponse = await response.json();
@@ -77,6 +80,17 @@ export async function getStockAnalysis(
     };
   } catch (error) {
     console.error('Error fetching stock analysis:', error);
-    throw error;
+    
+    // More detailed error message
+    if (error instanceof Error) {
+      // Check for common fetch errors
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error(
+          'Connection to Perplexity API failed. This could be due to network issues, CORS restrictions, or an invalid API key.'
+        );
+      }
+      throw error;
+    }
+    throw new Error('Unknown error when fetching stock analysis');
   }
 }
