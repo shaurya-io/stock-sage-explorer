@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis, StockAnalysisResult } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
 import { toast } from 'sonner';
+
+const API_KEY_STORAGE_KEY = 'perplexity_api_key';
 
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
@@ -15,10 +17,18 @@ const Index = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [keySubmitted, setKeySubmitted] = useState<boolean>(false);
 
+  // Check for stored API key on component mount
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+    if (storedApiKey) {
+      setApiKey(storedApiKey);
+      setKeySubmitted(true);
+    }
+  }, []);
+
   const handleSelectStock = async (stock: Stock) => {
     if (!keySubmitted) {
-      // Just show an error without toast
-      alert('Please enter your Perplexity API key first');
+      toast.error('Please enter your Perplexity API key first');
       return;
     }
 
@@ -33,8 +43,9 @@ const Index = () => {
       setAnalysis(result.content);
       setReferences(result.references);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      // Remove toast error message
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
+      toast.error('Error fetching analysis: ' + errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -43,12 +54,25 @@ const Index = () => {
   const handleSubmitApiKey = (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiKey.trim()) {
-      // Remove toast error message
-      alert('Please enter a valid API key');
+      toast.error('Please enter a valid API key');
       return;
     }
+    
+    // Store API key in localStorage
+    localStorage.setItem(API_KEY_STORAGE_KEY, apiKey.trim());
     setKeySubmitted(true);
-    // Remove toast success message
+    toast.success('API key saved');
+  };
+
+  const handleResetApiKey = () => {
+    localStorage.removeItem(API_KEY_STORAGE_KEY);
+    setApiKey('');
+    setKeySubmitted(false);
+    setSelectedStock(null);
+    setAnalysis(null);
+    setReferences(null);
+    setError(null);
+    toast.info('API key removed');
   };
 
   return (
@@ -84,11 +108,11 @@ const Index = () => {
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  placeholder="sk-..."
+                  placeholder="pplx-..."
                   autoComplete="off"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Your API key is only stored in this browser session and is never saved.
+                  Your API key is stored locally in your browser and never sent to our servers.
                 </p>
               </div>
               <button
@@ -101,8 +125,16 @@ const Index = () => {
           </div>
         ) : (
           <>
-            <div className="mb-8 animate-fade-up">
-              <StockSelector onSelectStock={handleSelectStock} />
+            <div className="flex flex-col gap-4 mb-8 animate-fade-up">
+              <div className="flex items-center justify-between">
+                <StockSelector onSelectStock={handleSelectStock} />
+                <button
+                  onClick={handleResetApiKey}
+                  className="text-xs text-muted-foreground hover:text-destructive border border-border px-3 py-1 rounded-md"
+                >
+                  Reset API Key
+                </button>
+              </div>
             </div>
 
             {selectedStock && (

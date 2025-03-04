@@ -17,7 +17,7 @@ interface PerplexityResponse {
     prompt_tokens: number;
     total_tokens: number;
   };
-  citations?: string[]; // Added citations field which may exist in the response
+  citations?: string[];
 }
 
 export interface StockAnalysisResult {
@@ -30,12 +30,21 @@ export async function getStockAnalysis(
   apiKey: string
 ): Promise<StockAnalysisResult> {
   try {
+    if (!apiKey || !apiKey.trim()) {
+      throw new Error("API key is required");
+    }
+
+    // Ensure API key is properly formatted
+    const trimmedApiKey = apiKey.trim();
+    
     const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings.`;
+    
+    console.log("Making request to Perplexity API with key length:", trimmedApiKey.length);
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${trimmedApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
