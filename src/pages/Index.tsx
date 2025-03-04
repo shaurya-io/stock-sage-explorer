@@ -1,46 +1,16 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
 import { toast } from 'sonner';
-import { Progress } from '@/components/ui/progress';
 
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [progress, setProgress] = useState<number>(0);
-
-  // Effect to handle the progress bar filling over 20 seconds
-  useEffect(() => {
-    let progressInterval: NodeJS.Timeout | null = null;
-    
-    if (isLoading) {
-      setProgress(0);
-      const intervalDuration = 200; // Update every 200ms
-      const totalDuration = 20000; // 20 seconds
-      const steps = totalDuration / intervalDuration;
-      const increment = 100 / steps;
-      
-      progressInterval = setInterval(() => {
-        setProgress(prev => {
-          const newProgress = prev + increment;
-          return newProgress > 100 ? 100 : newProgress;
-        });
-      }, intervalDuration);
-    } else if (progressInterval) {
-      setProgress(100); // Ensure progress reaches 100% when loading completes
-    }
-
-    return () => {
-      if (progressInterval) {
-        clearInterval(progressInterval);
-      }
-    };
-  }, [isLoading]);
 
   const handleSelectStock = async (stock: Stock) => {
     setSelectedStock(stock);
@@ -86,20 +56,6 @@ const Index = () => {
             <StockSelector onSelectStock={handleSelectStock} />
           </div>
         </div>
-
-        {isLoading && (
-          <div className="w-full max-w-4xl mx-auto mb-6 animate-fade-up">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm font-medium text-muted-foreground">
-                Analyzing {selectedStock?.symbol}...
-              </p>
-              <span className="text-xs text-muted-foreground">
-                {Math.min(Math.round(progress), 100)}%
-              </span>
-            </div>
-            <Progress value={progress} className="h-2 w-full" />
-          </div>
-        )}
 
         {selectedStock && (
           <StockAnalysis
