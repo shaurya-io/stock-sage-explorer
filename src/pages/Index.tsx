@@ -1,13 +1,15 @@
 
 import React, { useState } from 'react';
 import { Stock } from '@/utils/stocksData';
-import { getStockAnalysis } from '@/utils/perplexityApi';
+import { getStockAnalysis, StockAnalysisResult } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
+import { toast } from 'sonner';
 
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
+  const [references, setReferences] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string>('');
@@ -24,10 +26,12 @@ const Index = () => {
     setIsLoading(true);
     setError(null);
     setAnalysis(null);
+    setReferences(null);
 
     try {
-      const stockAnalysis = await getStockAnalysis(stock.symbol, apiKey);
-      setAnalysis(stockAnalysis);
+      const result: StockAnalysisResult = await getStockAnalysis(stock.symbol, apiKey);
+      setAnalysis(result.content);
+      setReferences(result.references);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
       // Remove toast error message
@@ -105,6 +109,7 @@ const Index = () => {
               <StockAnalysis
                 stock={selectedStock}
                 analysis={analysis}
+                references={references}
                 isLoading={isLoading}
                 error={error}
               />

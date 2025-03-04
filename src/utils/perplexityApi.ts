@@ -17,12 +17,18 @@ interface PerplexityResponse {
     prompt_tokens: number;
     total_tokens: number;
   };
+  citations?: string[]; // Added citations field which may exist in the response
+}
+
+export interface StockAnalysisResult {
+  content: string;
+  references: string[];
 }
 
 export async function getStockAnalysis(
   stockSymbol: string,
   apiKey: string
-): Promise<string> {
+): Promise<StockAnalysisResult> {
   try {
     const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings. Format your response using Markdown with headers, lists, and emphasis where appropriate.`;
     
@@ -55,7 +61,11 @@ export async function getStockAnalysis(
     }
 
     const data: PerplexityResponse = await response.json();
-    return data.choices[0]?.message.content || 'No analysis available';
+    
+    return {
+      content: data.choices[0]?.message.content || 'No analysis available',
+      references: data.citations || []
+    };
   } catch (error) {
     console.error('Error fetching stock analysis:', error);
     throw error;

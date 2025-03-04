@@ -3,10 +3,12 @@ import React from 'react';
 import { Stock } from '@/utils/stocksData';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
+import { ExternalLink, Link } from 'lucide-react';
 
 interface StockAnalysisProps {
   stock: Stock | null;
   analysis: string | null;
+  references: string[] | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -14,6 +16,7 @@ interface StockAnalysisProps {
 const StockAnalysis: React.FC<StockAnalysisProps> = ({
   stock,
   analysis,
+  references,
   isLoading,
   error
 }) => {
@@ -67,6 +70,29 @@ const StockAnalysis: React.FC<StockAnalysisProps> = ({
               >
                 {analysis}
               </ReactMarkdown>
+              
+              {references && references.length > 0 && (
+                <div className="mt-8 pt-4 border-t border-border">
+                  <h3 className="text-md font-bold mb-2">References</h3>
+                  <ul className="space-y-2">
+                    {references.map((reference, index) => (
+                      <li key={index} className="flex items-start gap-2 text-xs text-muted-foreground">
+                        <ExternalLink size={14} className="flex-shrink-0 mt-0.5" />
+                        <a 
+                          href={reference} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="hover:text-primary truncate"
+                          title={reference}
+                        >
+                          {reference.replace(/^https?:\/\/(www\.)?/, '').slice(0, 50)}
+                          {reference.length > 50 ? '...' : ''}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-sm text-muted-foreground py-4">
