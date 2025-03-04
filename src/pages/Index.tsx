@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis } from '@/utils/perplexityApi';
@@ -136,12 +137,7 @@ const Index = () => {
             <div className="flex flex-col gap-4 mb-8 animate-fade-up">
               <div className="flex items-center justify-between">
                 <StockSelector onSelectStock={handleSelectStock} />
-                <button
-                  onClick={handleResetApiKey}
-                  className="text-xs text-muted-foreground hover:text-destructive border border-border px-3 py-1 rounded-md"
-                >
-                  Reset API Key
-                </button>
+                {/* Reset API Key button removed */}
               </div>
             </div>
 
