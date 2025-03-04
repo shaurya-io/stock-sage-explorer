@@ -4,7 +4,6 @@ import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
-import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
@@ -16,9 +15,8 @@ const Index = () => {
 
   const handleSelectStock = async (stock: Stock) => {
     if (!keySubmitted) {
-      toast.error({
-        message: 'Please enter your Perplexity API key first'
-      });
+      // Just show an error without toast
+      alert('Please enter your Perplexity API key first');
       return;
     }
 
@@ -32,9 +30,7 @@ const Index = () => {
       setAnalysis(stockAnalysis);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      toast.error({
-        message: 'Error fetching stock analysis'
-      });
+      // Remove toast error message
     } finally {
       setIsLoading(false);
     }
@@ -43,15 +39,12 @@ const Index = () => {
   const handleSubmitApiKey = (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiKey.trim()) {
-      toast.error({
-        message: 'Please enter a valid API key'
-      });
+      // Remove toast error message
+      alert('Please enter a valid API key');
       return;
     }
     setKeySubmitted(true);
-    toast.success({
-      message: 'API key saved for this session'
-    });
+    // Remove toast success message
   };
 
   return (
