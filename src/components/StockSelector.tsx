@@ -13,19 +13,12 @@ interface StockSelectorProps {
 const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
   const [open, setOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSelect = (stock: Stock) => {
     setSelectedStock(stock);
     onSelectStock(stock);
     setOpen(false);
   };
-
-  const filteredStocks = popularStocks.filter(stock => 
-    stock.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    stock.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (stock.sector && stock.sector.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -64,19 +57,17 @@ const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 placeholder="Search stocks..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-10 w-full rounded-md border border-input bg-background pl-8 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div className="mt-2">
-              {filteredStocks.length === 0 ? (
+              {popularStocks.length === 0 ? (
                 <p className="py-6 text-center text-sm text-muted-foreground">
                   No stocks found.
                 </p>
               ) : (
                 <div className="space-y-1">
-                  {filteredStocks.map((stock) => (
+                  {popularStocks.map((stock) => (
                     <div
                       key={stock.symbol}
                       onClick={() => handleSelect(stock)}
