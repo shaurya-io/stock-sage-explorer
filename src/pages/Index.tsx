@@ -16,7 +16,9 @@ const Index = () => {
 
   const handleSelectStock = async (stock: Stock) => {
     if (!keySubmitted) {
-      toast.error('Please enter your Perplexity API key first');
+      toast.error({
+        message: 'Please enter your Perplexity API key first'
+      });
       return;
     }
 
@@ -30,7 +32,9 @@ const Index = () => {
       setAnalysis(stockAnalysis);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      toast.error('Error fetching stock analysis');
+      toast.error({
+        message: 'Error fetching stock analysis'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -39,11 +43,15 @@ const Index = () => {
   const handleSubmitApiKey = (e: React.FormEvent) => {
     e.preventDefault();
     if (!apiKey.trim()) {
-      toast.error('Please enter a valid API key');
+      toast.error({
+        message: 'Please enter a valid API key'
+      });
       return;
     }
     setKeySubmitted(true);
-    toast.success('API key saved for this session');
+    toast.success({
+      message: 'API key saved for this session'
+    });
   };
 
   return (
