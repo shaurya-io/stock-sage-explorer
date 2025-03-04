@@ -29,27 +29,22 @@ function cleanResponseText(text: string): string {
   return text.replace(/<think>[\s\S]*?<\/think>/g, '');
 }
 
+// Hardcoded API key
+const API_KEY = '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';
+
 export async function getStockAnalysis(
-  stockSymbol: string,
-  apiKey: string
+  stockSymbol: string
 ): Promise<StockAnalysisResult> {
   try {
-    if (!apiKey || !apiKey.trim()) {
-      throw new Error("API key is required");
-    }
-
-    // Ensure API key is properly formatted
-    const trimmedApiKey = apiKey.trim();
-    
     const prompt = `Explain ${stockSymbol} price trend and news. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Your output should NOT exceed 250 words, BE CONCISE. Format your response elegantly using markdown.`;
     
-    console.log("Making request to Perplexity API with key length:", trimmedApiKey.length);
+    console.log("Making request to Perplexity API");
     
     // Add credentials and mode to fetch options to handle CORS issues
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${trimmedApiKey}`,
+        'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json',
       },
       mode: 'cors', // Add explicit CORS mode
@@ -92,7 +87,7 @@ export async function getStockAnalysis(
       // Check for common fetch errors
       if (error.message.includes('Failed to fetch')) {
         throw new Error(
-          'Connection to Perplexity API failed. This could be due to network issues, CORS restrictions, or an invalid API key.'
+          'Connection to Perplexity API failed. This could be due to network issues or CORS restrictions.'
         );
       }
       throw error;

@@ -1,41 +1,18 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
 import { toast } from 'sonner';
 
-const API_KEY_STORAGE_KEY = 'perplexity_api_key';
-
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [apiKey, setApiKey] = useState<string>('');
-  const [keySubmitted, setKeySubmitted] = useState<boolean>(false);
-
-  useEffect(() => {
-    const storedApiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-    if (storedApiKey) {
-      setApiKey(storedApiKey);
-      setKeySubmitted(true);
-    }
-  }, []);
 
   const handleSelectStock = async (stock: Stock) => {
-    if (!keySubmitted) {
-      toast.error('Please enter your Perplexity API key first');
-      return;
-    }
-
-    if (!apiKey || apiKey.trim() === '') {
-      toast.error('API key is empty or invalid');
-      setKeySubmitted(false);
-      return;
-    }
-
     setSelectedStock(stock);
     setIsLoading(true);
     setError(null);
@@ -43,7 +20,7 @@ const Index = () => {
 
     try {
       toast.info(`Analyzing ${stock.symbol}...`);
-      const result = await getStockAnalysis(stock.symbol, apiKey);
+      const result = await getStockAnalysis(stock.symbol);
       setAnalysis(result.content);
       toast.success(`Analysis for ${stock.symbol} complete`);
     } catch (err) {
@@ -53,35 +30,6 @@ const Index = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSubmitApiKey = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!apiKey.trim()) {
-      toast.error('Please enter a valid API key');
-      return;
-    }
-    
-    const trimmedKey = apiKey.trim();
-    
-    if (!trimmedKey.startsWith('pplx-')) {
-      toast.warning('API key should start with "pplx-". Please check your key.');
-    }
-    
-    localStorage.setItem(API_KEY_STORAGE_KEY, trimmedKey);
-    setApiKey(trimmedKey);
-    setKeySubmitted(true);
-    toast.success('API key saved');
-  };
-
-  const handleResetApiKey = () => {
-    localStorage.removeItem(API_KEY_STORAGE_KEY);
-    setApiKey('');
-    setKeySubmitted(false);
-    setSelectedStock(null);
-    setAnalysis(null);
-    setError(null);
-    toast.info('API key removed');
   };
 
   return (
@@ -103,61 +51,27 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-8 md:px-6">
-        {!keySubmitted ? (
-          <div className="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow-sm border border-border animate-fade-up">
-            <h2 className="text-lg font-medium mb-4">Perplexity API Key</h2>
-            <form onSubmit={handleSubmitApiKey} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="api-key" className="text-sm font-medium">
-                  Enter your Perplexity API key to get started
-                </label>
-                <input
-                  id="api-key"
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  placeholder="pplx-..."
-                  autoComplete="off"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Your API key is stored locally in your browser and never sent to our servers.
-                </p>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-              >
-                Start Analyzing Stocks
-              </button>
-            </form>
+        <div className="flex flex-col gap-4 mb-8 animate-fade-up">
+          <div className="flex items-center justify-between">
+            <StockSelector onSelectStock={handleSelectStock} />
           </div>
-        ) : (
-          <>
-            <div className="flex flex-col gap-4 mb-8 animate-fade-up">
-              <div className="flex items-center justify-between">
-                <StockSelector onSelectStock={handleSelectStock} />
-                {/* Reset API Key button removed */}
-              </div>
-            </div>
+        </div>
 
-            {selectedStock && (
-              <StockAnalysis
-                stock={selectedStock}
-                analysis={analysis}
-                isLoading={isLoading}
-                error={error}
-              />
-            )}
+        {selectedStock && (
+          <StockAnalysis
+            stock={selectedStock}
+            analysis={analysis}
+            isLoading={isLoading}
+            error={error}
+          />
+        )}
 
-            {!selectedStock && (
-              <div className="text-center my-16 animate-fade-up animate-delay-200">
-                <p className="text-muted-foreground">
-                  Select a stock from the dropdown above to view its analysis
-                </p>
-              </div>
-            )}
-          </>
+        {!selectedStock && (
+          <div className="text-center my-16 animate-fade-up animate-delay-200">
+            <p className="text-muted-foreground">
+              Select a stock from the dropdown above to view its analysis
+            </p>
+          </div>
         )}
       </main>
 
