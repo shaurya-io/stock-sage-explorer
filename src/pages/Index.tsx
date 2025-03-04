@@ -93,7 +93,7 @@ const Index = () => {
               Stock Insights
             </span>
             <h1 className="text-3xl font-bold tracking-tight animate-fade-up">
-              Stock Sage Explorer
+              Stock News Summarizer v0
             </h1>
             <p className="mt-2 text-muted-foreground max-w-xl animate-fade-up animate-delay-100">
               Select a stock to receive a comprehensive analysis of recent price movements, news, and analyst sentiments.
@@ -164,7 +164,7 @@ const Index = () => {
       <footer className="w-full border-t border-border py-6 bg-white">
         <div className="max-w-5xl mx-auto px-4 md:px-6">
           <p className="text-xs text-center text-muted-foreground">
-            Stock Sage Explorer provides analysis powered by Perplexity API. Stock information is for educational purposes only.
+            Stock News Summarizer v0 provides analysis powered by Perplexity API. Stock information is for educational purposes only.
           </p>
         </div>
       </footer>
