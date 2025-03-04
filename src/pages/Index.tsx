@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
@@ -10,10 +10,16 @@ const Index = () => {
   const [analysis, setAnalysis] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  // Hardcoded API key
-  const apiKey = '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';
+  const [apiKey, setApiKey] = useState<string>('');
+  const [keySubmitted, setKeySubmitted] = useState<boolean>(false);
 
   const handleSelectStock = async (stock: Stock) => {
+    if (!keySubmitted) {
+      // Just show an error without toast
+      alert('Please enter your Perplexity API key first');
+      return;
+    }
+
     setSelectedStock(stock);
     setIsLoading(true);
     setError(null);
@@ -24,9 +30,21 @@ const Index = () => {
       setAnalysis(stockAnalysis);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      // Remove toast error message
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmitApiKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!apiKey.trim()) {
+      // Remove toast error message
+      alert('Please enter a valid API key');
+      return;
+    }
+    setKeySubmitted(true);
+    // Remove toast success message
   };
 
   return (
@@ -48,25 +66,58 @@ const Index = () => {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-8 md:px-6">
-        <div className="mb-8 animate-fade-up">
-          <StockSelector onSelectStock={handleSelectStock} />
-        </div>
-
-        {selectedStock && (
-          <StockAnalysis
-            stock={selectedStock}
-            analysis={analysis}
-            isLoading={isLoading}
-            error={error}
-          />
-        )}
-
-        {!selectedStock && (
-          <div className="text-center my-16 animate-fade-up animate-delay-200">
-            <p className="text-muted-foreground">
-              Select a stock from the dropdown above to view its analysis
-            </p>
+        {!keySubmitted ? (
+          <div className="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow-sm border border-border animate-fade-up">
+            <h2 className="text-lg font-medium mb-4">Perplexity API Key</h2>
+            <form onSubmit={handleSubmitApiKey} className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="api-key" className="text-sm font-medium">
+                  Enter your Perplexity API key to get started
+                </label>
+                <input
+                  id="api-key"
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  placeholder="sk-..."
+                  autoComplete="off"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Your API key is only stored in this browser session and is never saved.
+                </p>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              >
+                Start Analyzing Stocks
+              </button>
+            </form>
           </div>
+        ) : (
+          <>
+            <div className="mb-8 animate-fade-up">
+              <StockSelector onSelectStock={handleSelectStock} />
+            </div>
+
+            {selectedStock && (
+              <StockAnalysis
+                stock={selectedStock}
+                analysis={analysis}
+                isLoading={isLoading}
+                error={error}
+              />
+            )}
+
+            {!selectedStock && (
+              <div className="text-center my-16 animate-fade-up animate-delay-200">
+                <p className="text-muted-foreground">
+                  Select a stock from the dropdown above to view its analysis
+                </p>
+              </div>
+            )}
+          </>
         )}
       </main>
 
