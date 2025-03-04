@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Stock } from '@/utils/stocksData';
-import { getStockAnalysis, StockAnalysisResult } from '@/utils/perplexityApi';
+import { getStockAnalysis } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
 import { toast } from 'sonner';
@@ -11,13 +10,11 @@ const API_KEY_STORAGE_KEY = 'perplexity_api_key';
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(null);
-  const [references, setReferences] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string>('');
   const [keySubmitted, setKeySubmitted] = useState<boolean>(false);
 
-  // Check for stored API key on component mount
   useEffect(() => {
     const storedApiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
     if (storedApiKey) {
@@ -42,13 +39,11 @@ const Index = () => {
     setIsLoading(true);
     setError(null);
     setAnalysis(null);
-    setReferences(null);
 
     try {
       toast.info(`Analyzing ${stock.symbol}...`);
-      const result: StockAnalysisResult = await getStockAnalysis(stock.symbol, apiKey);
+      const result = await getStockAnalysis(stock.symbol, apiKey);
       setAnalysis(result.content);
-      setReferences(result.references);
       toast.success(`Analysis for ${stock.symbol} complete`);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
@@ -68,12 +63,10 @@ const Index = () => {
     
     const trimmedKey = apiKey.trim();
     
-    // Validate the API key format (basic check - Perplexity keys start with "pplx-")
     if (!trimmedKey.startsWith('pplx-')) {
       toast.warning('API key should start with "pplx-". Please check your key.');
     }
     
-    // Store API key in localStorage
     localStorage.setItem(API_KEY_STORAGE_KEY, trimmedKey);
     setApiKey(trimmedKey);
     setKeySubmitted(true);
@@ -86,7 +79,6 @@ const Index = () => {
     setKeySubmitted(false);
     setSelectedStock(null);
     setAnalysis(null);
-    setReferences(null);
     setError(null);
     toast.info('API key removed');
   };
@@ -157,7 +149,6 @@ const Index = () => {
               <StockAnalysis
                 stock={selectedStock}
                 analysis={analysis}
-                references={references}
                 isLoading={isLoading}
                 error={error}
               />

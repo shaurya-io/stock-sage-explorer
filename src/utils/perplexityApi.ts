@@ -17,12 +17,10 @@ interface PerplexityResponse {
     prompt_tokens: number;
     total_tokens: number;
   };
-  citations?: string[];
 }
 
 export interface StockAnalysisResult {
   content: string;
-  references: string[];
 }
 
 export async function getStockAnalysis(
@@ -37,7 +35,7 @@ export async function getStockAnalysis(
     // Ensure API key is properly formatted
     const trimmedApiKey = apiKey.trim();
     
-    const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings.`;
+    const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings. Do not include references in the format [1], [2], etc.`;
     
     console.log("Making request to Perplexity API with key length:", trimmedApiKey.length);
     
@@ -54,7 +52,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response.',
           },
           {
             role: 'user',
@@ -75,8 +73,7 @@ export async function getStockAnalysis(
     const data: PerplexityResponse = await response.json();
     
     return {
-      content: data.choices[0]?.message.content || 'No analysis available',
-      references: data.citations || []
+      content: data.choices[0]?.message.content || 'No analysis available'
     };
   } catch (error) {
     console.error('Error fetching stock analysis:', error);
