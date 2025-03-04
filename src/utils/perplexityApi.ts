@@ -23,6 +23,12 @@ export interface StockAnalysisResult {
   content: string;
 }
 
+// Function to clean the response text by removing <think> tags and their content
+function cleanResponseText(text: string): string {
+  // Remove everything between <think> and </think> tags, including the tags themselves
+  return text.replace(/<think>[\s\S]*?<\/think>/g, '');
+}
+
 export async function getStockAnalysis(
   stockSymbol: string,
   apiKey: string
@@ -52,7 +58,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Your output should NOT exceed 300 words. Format your response elegantly using markdown.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Your output should NOT exceed 300 words. Format your response elegantly using markdown. DO NOT include any <think> tags or internal thinking process in your response.',
           },
           {
             role: 'user',
@@ -72,8 +78,11 @@ export async function getStockAnalysis(
 
     const data: PerplexityResponse = await response.json();
     
+    // Clean the response content by removing <think> tags and their content
+    const cleanedContent = cleanResponseText(data.choices[0]?.message.content || 'No analysis available');
+    
     return {
-      content: data.choices[0]?.message.content || 'No analysis available'
+      content: cleanedContent
     };
   } catch (error) {
     console.error('Error fetching stock analysis:', error);
