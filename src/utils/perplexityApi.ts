@@ -24,7 +24,7 @@ export async function getStockAnalysis(
   apiKey: string
 ): Promise<string> {
   try {
-    const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings`;
+    const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings. Format your response using Markdown with headers, lists, and emphasis where appropriate.`;
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
@@ -37,7 +37,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks.'
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Format your response using proper Markdown with headers, bullet points, and emphasis where appropriate.'
           },
           {
             role: 'user',
