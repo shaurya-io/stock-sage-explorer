@@ -30,7 +30,7 @@ export async function getStockAnalysis(
   apiKey: string
 ): Promise<StockAnalysisResult> {
   try {
-    const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings. Format your response using Markdown with headers, lists, and emphasis where appropriate.`;
+    const prompt = `Explain ${stockSymbol} recent price movements, news and analyst sentiments/ratings. Format your response using Markdown with headers, lists, and emphasis where appropriate. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barron's, The Economist, MarketWatch, Morningstar, NPR's Marketplace, and Refinitiv.`;
     
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
