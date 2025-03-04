@@ -46,6 +46,9 @@ const Index = () => {
             <p className="mt-2 text-muted-foreground max-w-xl animate-fade-up animate-delay-100">
               Select a stock to receive a comprehensive analysis of recent price movements, news, and analyst sentiments.
             </p>
+            <div className="mt-3 px-4 py-2 bg-yellow-50 border border-yellow-200 rounded-md text-amber-700 text-sm animate-fade-up animate-delay-200">
+              <span className="font-medium">Note:</span> Typical queries take approximately 30 seconds to retrieve results.
+            </div>
           </div>
         </div>
       </header>
