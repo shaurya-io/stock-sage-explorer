@@ -4,7 +4,7 @@ import { Stock } from '@/utils/stocksData';
 import { getStockAnalysis } from '@/utils/perplexityApi';
 import StockSelector from '@/components/StockSelector';
 import StockAnalysis from '@/components/StockAnalysis';
-import { toast } from '@/components/ui/sonner';
+import { toast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
