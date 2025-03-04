@@ -12,7 +12,6 @@ interface StockSelectorProps {
 
 const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
   const [open, setOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
 
   const handleSelect = (stock: Stock) => {
@@ -45,15 +44,15 @@ const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
             )} />
           </button>
         </PopoverTrigger>
+        
         <PopoverContent 
-          className="p-0 w-[var(--radix-popover-trigger-width)] max-h-[300px] bg-white"
+          className="p-0 w-full max-w-[var(--radix-popover-trigger-width)] bg-white shadow-md rounded-md"
           align="start"
+          sideOffset={5}
         >
           <Command className="rounded-lg border-none">
             <CommandInput 
               placeholder="Search stocks..." 
-              value={searchValue}
-              onValueChange={setSearchValue}
               className="h-9"
             />
             <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
@@ -65,7 +64,7 @@ const StockSelector: React.FC<StockSelectorProps> = ({ onSelectStock }) => {
                   key={stock.symbol}
                   onSelect={() => handleSelect(stock)}
                   className={cn(
-                    "flex items-center gap-2 py-2 px-2 cursor-pointer aria-selected:bg-accent",
+                    "flex items-center gap-2 py-2 px-2 cursor-pointer hover:bg-accent",
                     selectedStock?.symbol === stock.symbol && "bg-accent/50"
                   )}
                 >
