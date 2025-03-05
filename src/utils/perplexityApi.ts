@@ -53,7 +53,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Format your response elegantly using markdown. DO NOT include any <think> tags or internal thinking process in your response.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Format your response elegantly using markdown.',
           },
           {
             role: 'user',
