@@ -49,7 +49,7 @@ export async function getStockAnalysis(
       },
       mode: 'cors', // Add explicit CORS mode
       body: JSON.stringify({
-        model: 'sonar-pro',
+        model: 'sonar',
         messages: [
           {
             role: 'system',
