@@ -60,7 +60,7 @@ export async function getStockAnalysis(
             content: prompt
           }
         ],
-        temperature: 0.1,
+        temperature: 0.15,
         max_tokens: 400,
       }),
     });
