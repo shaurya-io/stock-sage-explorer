@@ -36,7 +36,7 @@ export async function getStockAnalysis(
   stockSymbol: string
 ): Promise<StockAnalysisResult> {
   try {
-    const prompt = `Explain ${stockSymbol} price trend and news. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Your output should NOT exceed 250 words, BE CONCISE. Format your response elegantly using markdown.`;
+    const prompt = `Explain ${stockSymbol} price trend and news. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Your output should NOT exceed 200 words, BE CONCISE. Format your response elegantly using markdown.`;
     
     console.log("Making request to Perplexity API");
     
