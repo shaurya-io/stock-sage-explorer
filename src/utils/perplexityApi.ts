@@ -36,7 +36,7 @@ export async function getStockAnalysis(
   stockSymbol: string
 ): Promise<StockAnalysisResult> {
   try {
-    const prompt = `Summarize recent ${stockSymbol} news. Format your response elegantly using markdown.`;
+    const prompt = `Explain ${stockSymbol} price trend and news. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Your output should NOT exceed 250 words, BE CONCISE. Format your response elegantly using markdown.`;
     
     console.log("Making request to Perplexity API");
     
@@ -53,15 +53,15 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include references in the format [1], [2], etc. List your references FULL URL at the end. Format your response elegantly using markdown. All facts about stock prices and analyst targets should be double-checked from multiple sources. If you are not confident of a financial metric or fact, exclude it from your answer. Do NOT send <think> and </think> back in your response.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Your output should NOT exceed 200 words, BE CONCISE. Format your response elegantly using markdown. DO NOT include any <think> tags or internal thinking process in your response.',
           },
           {
             role: 'user',
             content: prompt
           }
         ],
-        temperature: 0.15,
-        max_tokens: 400,
+        temperature: 0.2,
+        max_tokens: 2000,
       }),
     });
 
