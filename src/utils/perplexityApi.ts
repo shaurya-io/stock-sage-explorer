@@ -36,7 +36,7 @@ export async function getStockAnalysis(
   stockSymbol: string
 ): Promise<StockAnalysisResult> {
   try {
-    const prompt = `Explain ${stockSymbol} price trend and news. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Your output should NOT exceed 200 words, BE CONCISE. Format your response elegantly using markdown.`;
+    const prompt = `Explain ${stockSymbol} price trend and news. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Format your response elegantly using markdown.`;
     
     console.log("Making request to Perplexity API");
     
@@ -53,7 +53,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Your output should NOT exceed 200 words, BE CONCISE. Format your response elegantly using markdown. DO NOT include any <think> tags or internal thinking process in your response.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Format your response elegantly using markdown. DO NOT include any <think> tags or internal thinking process in your response.',
           },
           {
             role: 'user',
