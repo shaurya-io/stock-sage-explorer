@@ -36,7 +36,7 @@ export async function getStockAnalysis(
   stockSymbol: string
 ): Promise<StockAnalysisResult> {
   try {
-    const prompt = `Explain ${stockSymbol} news and price trends/sentiments. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Do not include references in the format [1], [2], etc. Format your response elegantly using markdown.`;
+    const prompt = `Explain ${stockSymbol} news and price trends/sentiments. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Format your response elegantly using markdown.`;
     
     console.log("Making request to Perplexity API");
     
@@ -53,7 +53,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include numbered references like [1], [2] in your response. Format your response elegantly using markdown. All facts about stock prices should be double-checked.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. List your references. Format your response elegantly using markdown. All facts about stock prices should be double-checked.',
           },
           {
             role: 'user',
@@ -61,7 +61,7 @@ export async function getStockAnalysis(
           }
         ],
         temperature: 0.2,
-        max_tokens: 400,
+        max_tokens: 3000,
       }),
     });
 
