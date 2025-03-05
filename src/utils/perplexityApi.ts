@@ -53,7 +53,7 @@ export async function getStockAnalysis(
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include references in the format [1], [2], etc. List your references FULL URL at the end. Format your response elegantly using markdown. All facts about stock prices and analyst targets should be double-checked from multiple sources. If you are not confident of a financial metric or fact, exclude it from your answer.',
+            content: 'You are a helpful assistant providing concise and accurate information about stocks. Restrict your sources to The Wall Street Journal, Bloomberg, Financial Times, CNBC, Reuters, Barrons, The Economist, MarketWatch, Morningstar, NPR Marketplace, and Refinitiv. Be concise. Do not include references in the format [1], [2], etc. List your references FULL URL at the end. Format your response elegantly using markdown. All facts about stock prices and analyst targets should be double-checked from multiple sources. If you are not confident of a financial metric or fact, exclude it from your answer. Do NOT send <think> and </think> back in your response.',
           },
           {
             role: 'user',
